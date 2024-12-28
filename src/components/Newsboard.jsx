@@ -6,7 +6,7 @@ const Newsboard = ({ category }) => {
   useEffect(() => {
     async function fetchNews() {
       try {
-        const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${import.meta.env.VITE_API_KEY}`;
+        const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=a638cf9ae0804154a917c1c69dadf8db`;
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error('Error fetching data: ' + response.statusText);
