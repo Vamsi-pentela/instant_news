@@ -1,32 +1,44 @@
 import React, { useState, useEffect } from 'react';
 
-const Newsboard = ({ category }) => { 
+const Newsboard = ({ category }) => {
   const [articles, setArticles] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchNews() {
       try {
-        const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=a638cf9ae0804154a917c1c69dadf8db`;
+        const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${import.meta.env.VITE_API_KEY}`;
         const response = await fetch(url);
+
         if (!response.ok) {
           throw new Error('Error fetching data: ' + response.statusText);
         }
+
         const data = await response.json();
+
+        if (data.status !== 'ok') {
+          throw new Error('Error in API response: ' + data.message);
+        }
+
         setArticles(data.articles);
       } catch (error) {
+        setError(error.message);
         console.error('Error:', error);
       }
     }
 
-    fetchNews(); 
-  }, [category]); 
+    fetchNews();
+  }, [category]);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div>
       <h2 className="text-center">
         Latest <span className="badge text-bg-danger fs-5">News</span>
       </h2>
-
       {articles.map((news, index) => (
         <div
           className="card bg-dark text-light mb-3 d-inline-block my-3 mx-3 px-2 py-2"
@@ -38,7 +50,7 @@ const Newsboard = ({ category }) => {
               height: '220px',
               width: '328px',
             }}
-            src={news.urlToImage || 'default-image.png'}
+            src={news.urlToImage || '/default-image.png'}
             className="card-img-top"
             alt="news"
           />
